@@ -1,0 +1,117 @@
+<app-header [cityId]="cityId"></app-header>
+<app-menu [menuNum]=5 [userId]="userId" [cityId]="cityId"></app-menu>
+
+<div *ngIf="errorMessage" class="alert alert-danger">{{errorMessage}}</div>
+<app-spinner *ngIf="loadingFlg"></app-spinner>
+
+<div style="text-align: center;">
+    <div class="grayBorder" *ngIf="offerList.length==0">
+        No offers at this time!
+    </div>
+    <div class="card" *ngFor="let offer of offerList">
+        <div class="liteBlueBG" style="text-align: center;">Offer</div>
+        <table align="center">
+            <tr>
+                <td>
+                    <div title="Photographer"><i class="fa fa-camera"></i> {{offer.buyerName}}</div>
+                    <img (mousedown)="profileModal.showUser(offer.buyerId, cityId)" [src]="offer.buyerPic"
+                        class="profilePic">
+                    <div class="smallText"><b>Photographer</b></div>
+                    <div class="mediumBlue">{{offer.buyerCity}}</div>
+                    <div class="smallText">{{offer.buyerPhone}}</div>
+                    <div class="smallText">{{offer.buyerEmail}}</div>
+                    <div></div>
+                </td>
+                <td>
+                    <div title="Model"><i class="fa fa-user"></i> {{offer.sellerName}}</div>
+                    <img (mousedown)="profileModal.showUser(offer.sellerId, cityId)" [src]="offer.sellerPic"
+                        class="profilePic">
+                    <div class="smallText"><b>Model</b></div>
+                    <div class="mediumBlue">{{offer.sellerCity}}</div>
+                    <div class="smallText">{{offer.sellerPhone}}</div>
+                    <div class="smallText">{{offer.sellerEmail}}</div>
+                </td>
+            </tr>
+        </table>
+        <div><b>Type:</b> {{offer.type}}</div>
+        <div><b>Hours:</b> {{offer.hours}}</div>
+        <div><b>Payment:</b> ${{offer.totalCost}}</div>
+        <div><b>Status:</b> <span [ngClass]="ngClassStatus(offer.status)">{{offer.status}}</span></div>
+        <div class="smallText">Created: {{offer.created}}</div>
+        <div *ngIf="!offer.seenFlg && offer.status == 'OFFERED'" class="smallText">Not yet viewed</div>
+        <div *ngIf="offer.seenFlg && offer.status == 'OFFERED'" class="smallText">Offer Reviewed {{offer.lastUpd}}</div>
+        <div *ngIf="offer.message && offer.message.length>0" class="grayBorder">
+            <div class="smallText" *ngIf="userId == offer.sellerId">Check out these proposed times & locations. Accept them if they are good, or send a message back if there are better times/locations.</div>
+            <div><b>Location:</b> {{offer.location}} <i *ngIf="offer.confirmLoc" title="Location confirmed" class="fa fa-check" style="color: green;"></i>
+                <button *ngIf="userId == offer.buyerId" (mousedown)="offer.showEditLocFLg = !offer.showEditLocFLg"
+                    class="btn btn-success roundButton">
+                    <i class="fa fa-pencil"></i></button>
+                <div *ngIf="offer.showEditLocFLg">
+                    <input type="text" id="location" placeholder="Location" [value]="offer.location">
+                    <button (mousedown)="updateLocation(offer)"
+                        class="btn btn-success roundButton">
+                        Send</button>
+                </div>
+                <button
+                    *ngIf="offer.status == 'ACCEPTED' && userId == offer.sellerId && !offer.confirmLoc && offer.location != 'TBD'"
+                    (mousedown)="acceptTimeOrLoc(offer, true)" class="btn btn-success roundButton">
+                    Accept</button>
+            </div>
+            <div><b>Time:</b> {{offer.shootDay}} <i *ngIf="offer.confirmTime" title="Time confirmed" class="fa fa-check" style="color: green;"></i>
+                <button *ngIf="userId == offer.buyerId" (mousedown)="offer.showEditDayFLg = !offer.showEditDayFLg"
+                    class="btn btn-success roundButton">
+                    <i class="fa fa-pencil"></i></button>
+                <div *ngIf="offer.showEditDayFLg">
+                    <input type="date" id="day" [value]="offer.day">
+                    <input type="time" id="shootTime" [value]="offer.shootTime">
+                    <button (mousedown)="updateShootDay(offer)"
+                        class="btn btn-success roundButton">
+                        Send</button>
+                </div>
+                <button
+                    *ngIf="offer.status == 'ACCEPTED' && userId == offer.sellerId && !offer.confirmTime && offer.shootDay != 'TBD'"
+                    (mousedown)="acceptTimeOrLoc(offer, false)" class="btn btn-success roundButton">
+                    Accept</button>
+            </div>
+            <hr>
+            <p *ngFor="let text of offer.message">{{text}}</p>
+        </div>
+        <div *ngIf="offer.reply && offer.reply.length>0" class="grayBorder">
+            <p *ngFor="let text of offer.reply">{{text}}</p>
+        </div>
+
+        <div class="grayBorder" *ngIf="offer.status == 'OFFERED' && userId == offer.sellerId">
+            <div>Would you like to accept this offer?</div>
+            <div style="font-size: 12px; color: gray;">
+                Upon accepting, you will have access to each other's contact information to set up the photo session.
+                At the session, you will receive ${{offer.totalCost}} cash payment.
+            </div>
+            <div style="text-align: center;" *ngIf="!loadingFlg">
+                <button (mousedown)="acceptOffer(offer)" class="btn btn-success roundButton">
+                    Accept</button>
+                <button (mousedown)="declineOffer(offer)" class="btn btn-danger roundButton">
+                    Decline</button>
+            </div>
+
+        </div>
+        <div class="grayBorder" *ngIf="offer.status == 'ACCEPTED'">
+            <button style="float: right;" (mousedown)="offer.showMessagesFlg=!offer.showMessagesFlg" class="btn btn-primary roundButton">
+                <i class="fa fa-eye"></i></button>
+                <div><b>Messages</b> <span *ngIf="offer.messages.length>0">&nbsp;({{offer.messages.length}})</span></div>
+                <div *ngIf="offer.showMessagesFlg">
+                    <div *ngFor="let message of offer.messages">
+                        <div>{{message.message}}</div>
+                        <div><b>&nbsp;&nbsp;&nbsp;- {{message.firstName}}</b></div>
+                    </div>
+                 <textarea name="message" id="message" style="width: 100%;"></textarea>
+                <button (mousedown)="sendOfferMessage(offer)" class="btn btn-primary roundButton">
+                    Send</button>
+            </div>
+        </div>
+
+
+
+    </div>
+</div>
+
+<app-profile-modal #profileModal></app-profile-modal>

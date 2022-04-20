@@ -1,0 +1,15 @@
+<app-header></app-header>
+<app-menu [menuNum]=3 (messageEvent)="buttonClicked($event)" [userId]="userId"></app-menu>
+
+<div style="width: 100%; text-align: center;">
+    <div class="card">
+        <p>Welcome to Photography Hub! Our goal is to make it quick and easy to connect local photographers with local models.</p>
+        <p>This is a free service that allows people to set their own prices and allow themselves to accept as many or as few offers as they like.</p>
+    </div>
+</div>
+<div style="width: 100%; text-align: center;">
+    <div style="color: gray;">Version 0.3</div>
+</div>
+
+
+<app-login-modal #loginModal></app-login-modal>

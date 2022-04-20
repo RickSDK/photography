@@ -1,0 +1,6 @@
+<i *ngIf="flag" class="fa fa-check-square-o"
+style="cursor: pointer;" [style.font-size] = "smallFlg?'16px':'32px'"></i>
+<i *ngIf="!flag" class="fa fa-square-o"
+style="font-size: 32px; cursor: pointer;"></i>
+<div *ngIf="icon"><img src="assets/img/types/{{icon}}" height="20"></div>
+<div style="font-size: 12px; color: #444;">{{name}}</div>

@@ -1,0 +1,48 @@
+<app-header></app-header>
+<app-menu [menuNum]=0  [cityId]="cityId" (messageEvent)="buttonClicked($event)" [userId]="userId"></app-menu>
+
+<div *ngIf="errorMessage" class="alert alert-danger">{{errorMessage}}</div>
+<app-spinner *ngIf="loadingFlg"></app-spinner>
+
+<div *ngIf="offerCount > 0" class="alert alert-warning" style="text-align: center;">
+
+    <span *ngIf="newOffers==0">You have {{offerCount}} pending offer<span *ngIf="offerCount>1">s</span>!</span>
+    <span *ngIf="newOffers>0">You have a new offer!!</span>
+    &nbsp;<button [routerLink]="['/offers']" [queryParams]="{id: user.cityId}" class="btn btn-success roundButton">
+        Your Offers</button>
+</div>
+
+<div style="width: 100%; text-align: center;">
+    <div class="card">
+        <p>Welcome to Photography Hub! Our goal is to make it quick and easy to connect local photographers with local
+            models.</p>
+        <p>Amateurs and professionals of all skill levels welcome. This is a free service. Set your own price. Accept as
+            many or as few offers as you like.</p>
+
+        <div style="text-align: center;">
+            <span *ngFor="let city of cityList" style="display: inline-block;">
+                <button [routerLink]="['/models']" [queryParams]="{id: city.id}" (click)="gotoCity(city)"
+                    style="padding: 10px; margin: 10px;" class="btn btn-primary roundButton">
+                    <div style="font-size: 18px;">{{city.city}}, {{city.state}}</div>
+
+                </button>
+                <div style="font-size: 10px; color: gray;"><i class="fa fa-user"></i> {{city.modelCount}} &nbsp; <i
+                        class="fa fa-camera"></i> {{city.photogCount}} </div>
+            </span>
+
+        </div>
+
+    </div>
+
+    <div *ngIf="!userId || userId==0" style="text-align: center;">
+        <button (click)="loginModal.show(cityId)" class="btn btn-primary roundButton" style=" padding: 25px;">
+            Log in!</button>
+    </div>
+
+
+</div>
+<div style="background-color: #ccc; position: fixed; bottom: 0; text-align: center; width: 100%;">
+    Contact: <a href="mailto:rickmedved@hotmail.com">support@photographyhub.net</a>
+</div>
+<app-profile-modal #profileModal></app-profile-modal>
+<app-login-modal #loginModal (messageEvent)="refreshScreen($event)"></app-login-modal>

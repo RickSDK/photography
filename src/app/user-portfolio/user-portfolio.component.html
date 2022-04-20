@@ -1,0 +1,12 @@
+<div class="grayBorder" style="text-align: center;"
+    *ngIf="user.portfolioImages && user.portfolioImages.length>0">
+    <div><b>{{user.name}}'s Portfolio</b></div>
+    <img (mousedown)="cyclePicIdx()" [src]="user.currentPortfolioImg" class="profilePicMain">
+    <button *ngIf="0" [disabled]="buttonDisabledFlg" (click)="deletePhotoPressed()"
+    class="btn btn-danger roundButton mr-2"><i class="fa fa-trash"></i>
+    Delete</button>
+    <div style="text-align: center;">
+        <img (mousedown)="user.currentPortfolioImg=imgSrc" *ngFor="let imgSrc of user.portfolioImages" [src]="imgSrc"
+            class="portfolioPicSmall" [ngClass]="ngClassImageSmall(imgSrc)">
+    </div>
+</div>

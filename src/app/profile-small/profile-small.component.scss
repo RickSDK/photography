@@ -1,0 +1,44 @@
+.card {
+   display: inline-block;
+   cursor: pointer;
+	border: 1px solid #222;
+   background-color: #ddd; 
+   color: black;
+	margin: 6px;
+   border-radius: 5px; 
+	padding: 0;
+	box-shadow: 2px 2px 3px #444;
+   width: 150px;
+   min-height: 200px;
+   text-align: center;
+   overflow: hidden;
+ }
+ .card:hover {
+	border: 2px solid black;
+   background-color: #eee; 
+	box-shadow: 2px 2px 5px black;
+ }
+ .profilePic {
+    height: 160px;
+    width: 100%; 
+    object-fit: cover;
+ }
+ .nameText {
+    font-size: 16px;
+ }
+ .smallIcon {
+    height: 20px;
+ }
+
+ @media screen and (max-width: 480px) {
+   .card {
+      width: 125px;
+      margin: 1px;
+   }
+   .nameText {
+      font-size: 12px;
+   }
+   .smallIcon {
+      height: 15px;
+   }
+}

@@ -1,0 +1,19 @@
+<app-header  [cityId]="cityId"></app-header>
+<app-menu [menuNum]=2  [cityId]="cityId" (messageEvent)="buttonClicked($event)" [userId]="userId"></app-menu>
+
+<app-spinner *ngIf="loadingFlg"></app-spinner>
+
+<div *ngIf="offerCount > 0" class="alert alert-warning" style="text-align: center;">
+    <span *ngIf="newOffers==0">You have {{offerCount}} pending offer<span *ngIf="offerCount>1">s</span>!</span>
+    <span *ngIf="newOffers>0">You have a new offer!!</span>
+    &nbsp;<button [routerLink]="['/offers']" [queryParams]="{id: cityId}" class="btn btn-success roundButton">
+        Your Offers</button>
+</div>
+
+<div style="text-align: center;">
+    <app-profile-small (mousedown)="profileModal.show(user, cityId)" *ngFor="let user of userList" [user]="user"></app-profile-small>
+    <div *ngIf="userList.length==0" class="grayBorder">No photographers yet for this city. Be our first!</div>
+</div>
+
+<app-profile-modal #profileModal></app-profile-modal>
+<app-login-modal #loginModal></app-login-modal>

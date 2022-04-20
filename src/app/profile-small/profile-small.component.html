@@ -1,0 +1,25 @@
+<span class="card" *ngIf="user">
+    <div class="liteBlueBG nameText" style="text-align: center;">{{user.name}}</div>
+    <img [src]="user.src" [title]="user.name" class="profilePic">
+    <div *ngIf="user.rate" style="min-height: 80px;">
+        <div><span class="highlightedText">${{user.rate}}</span>/Hour</div>
+        <div>
+            <img class="smallIcon" src="assets/img/types/portrait.png" title="Portrait">
+            <img class="smallIcon" *ngIf="user.fashionFlg" src="assets/img/types/fashion.png" title="Fashion">
+            <img class="smallIcon" *ngIf="user.fitnessFlg" src="assets/img/types/fitness.png" title="Fitness">
+            <img class="smallIcon" *ngIf="user.boudoirFlg" src="assets/img/types/boudoir.png" title="Boudoir">
+            <img class="smallIcon" *ngIf="user.paintFlg" src="assets/img/types/paint.png" title="Body Paint">
+            <img class="smallIcon" *ngIf="user.nudeFlg" src="assets/img/types/nudeF.png" title="Nude">
+            <img class="smallIcon" *ngIf="user.eroticFlg" src="assets/img/types/mask.png" title="Erotic">
+        </div>
+        <div style="padding: 5px;"><button type="button" class="btn btn-secondary roundButton"> Book</button></div>
+    </div>
+    <div *ngIf="!user.rate" style="height: 80px;">
+        Needs to set up profile
+    </div>
+    
+    <div style="background-color: #ccc; color: black; text-align: center; font-size: 12px;">&nbsp;{{user.city}}
+        <sup *ngIf="user.numImages>0" title="Images" style="color: blue;">{{user.numImages}}</sup>
+    </div>
+    <div class="liteBlueBG" style="text-align: center; font-size: 10px;">Last Active: {{user.lastActive}}</div>
+</span>

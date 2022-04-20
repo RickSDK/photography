@@ -1,0 +1,169 @@
+<div *ngIf="showFlg" class="modal-outer" id="photoModal" tabindex="-1" role="dialog" (mousedown)="outerClicked()">
+    <div class="modal-dialog modal-lg" id="profileModal" role="document" (mousedown)="innerClicked($event)">
+        <div class="modal-content">
+            <div class="modal-header" (mousedown)="showFlg=false">
+                <b><i *ngIf="user.photogFlg" title="Photographer" class="fa fa-camera mr-2"></i><i *ngIf="user.modelFlg"
+                        title="Model" class="fa fa-user mr-2"></i>
+                    {{user.name}}</b>
+                <i class="fa fa-times" style="float: right; cursor: pointer;"></i>
+
+            </div>
+            <div class="modal-body">
+
+                <table width="100%">
+                    <tr>
+                        <td align="left" width="200">
+                            <img [src]="user.src" [title]="user.name" class="profilePic">
+                        </td>
+                        <td>
+                            <div><b>{{user.name}}</b></div>
+
+                            <div *ngIf="user.rate">
+                                <div><b>Rate:</b> ${{user.rate}}/Hour <span *ngIf="user.twoHourFlg">(2-hour
+                                        minimum)</span></div>
+                                <div><b>City:</b> {{user.city}}</div>
+                                <div
+                                    *ngIf="user.fashionFlg && user.fitnessFlg && user.paintFlg && user.boudoirFlg && user.nudeFlg && user.eroticFlg">
+                                    <b>Type:</b> Any type of shoot!</div>
+                                <table
+                                    *ngIf="user.modelFlg && (!user.fashionFlg || !user.fitnessFlg || !user.paintFlg || !user.boudoirFlg || !user.nudeFlg || !user.eroticFlg)">
+                                    <tr>
+                                        <td align="center">
+                                            <app-checkbox-toggle [smallFlg]="true" [flag]="true" [name]="'Portrait'">
+                                            </app-checkbox-toggle>
+                                        </td>
+                                        <td align="center">
+                                            <app-checkbox-toggle *ngIf="user.fashionFlg" [smallFlg]="true" [flag]="true"
+                                                [name]="'Fashion'"></app-checkbox-toggle>
+                                        </td>
+                                        <td align="center">
+                                            <app-checkbox-toggle *ngIf="user.fitnessFlg" [smallFlg]="true" [flag]="true"
+                                                [name]="'Fitness'"></app-checkbox-toggle>
+                                        </td>
+                                        <td align="center">
+                                            <app-checkbox-toggle *ngIf="user.paintFlg" [smallFlg]="true" [flag]="true"
+                                                [name]="'Body Paint'"></app-checkbox-toggle>
+                                        </td>
+                                        <td align="center">
+                                            <app-checkbox-toggle *ngIf="user.boudoirFlg" [smallFlg]="true" [flag]="true"
+                                                [name]="'Boudoir'"></app-checkbox-toggle>
+                                        </td>
+                                        <td align="center">
+                                            <app-checkbox-toggle *ngIf="user.nudeFlg" [smallFlg]="true" [flag]="true"
+                                                [name]="'Nude'"></app-checkbox-toggle>
+                                        </td>
+                                        <td align="center">
+                                            <app-checkbox-toggle *ngIf="user.eroticFlg" [smallFlg]="true" [flag]="true"
+                                                [name]="'Erotic'"></app-checkbox-toggle>
+                                        </td>
+                                    </tr>
+                                </table>
+
+                                <div *ngIf="user.modelFlg && user.nudeFees>0">Boudoir <span *ngIf="user.nudeFlg">&
+                                        Nude</span> extra ${{user.nudeFees}}</div>
+                                <div *ngIf="user.photogFlg" style="padding: 5px;"><button
+                                        (mousedown)="booksession(true)" type="button"
+                                        class="btn btn-secondary roundButton"> Hire this
+                                        Photographer</button></div>
+
+                                <div *ngIf="user.modelFlg && !showModelBookingFormFlg && !loadingFlg"
+                                    style="padding: 5px;"><button (mousedown)="booksession(false)" type="button"
+                                        class="btn btn-secondary roundButton"> Book a Session!</button>
+                                </div>
+
+
+                            </div>
+                            <div *ngIf="!user.rate" style="background-color: #ffffc0; padding: 10px;">
+                                Profile not set up yet
+                            </div>
+                            <div>Last Active: {{user.lastActive}}</div>
+                        </td>
+                    </tr>
+                </table>
+
+
+
+
+                <app-spinner *ngIf="loadingFlg"></app-spinner>
+                <div *ngIf="successFlg" class="alert alert-success">Request has been sent! Check back
+                    soon to see if it gets accepted.</div>
+                <div *ngIf="showModelBookingFormFlg" class="alert alert-warning">
+
+                    <div>Type of session</div>
+                    <div class="btn-group" role="group" aria-label="Type of Session">
+
+                        <button *ngFor="let type of types" style="font-size: 12px;" (mousedown)="setType(type)"
+                            type="button" class="btn btn-default"
+                            [ngClass]="ngClassButtonGroup(type.id, selectedType.id)">{{type.name}}</button>
+
+                    </div>
+                    <div># Hours</div>
+                    <div class="btn-group" role="group" aria-label="Basic example">
+                        <button [disabled]="user.twoHourFlg" (mousedown)="setHours(0)" type="button"
+                            class="btn btn-default" [ngClass]="ngClassButtonGroup(0, hoursIdx)">1</button>
+                        <button (mousedown)="setHours(1)" type="button" class="btn btn-default"
+                            [ngClass]="ngClassButtonGroup(1, hoursIdx)">2</button>
+                        <button (mousedown)="setHours(2)" type="button" class="btn btn-default"
+                            [ngClass]="ngClassButtonGroup(2, hoursIdx)">3</button>
+                        <button (mousedown)="setHours(3)" type="button" class="btn btn-default"
+                            [ngClass]="ngClassButtonGroup(3, hoursIdx)">4</button>
+                    </div>
+                    <div>Type: <span class="highlightedText">{{selectedType.name}}</span></div>
+                    <div>Your cost: <span class="highlightedText">${{totalCost}}</span></div>
+                    <div class="grayBorder">
+                        <div>Fill out these field or leave them blank for now.</div>
+                        <table>
+                            <tr>
+                                <td>Suggest a day:</td>
+                                <td>
+                                    <input type="date" id="day" placeholder="TBD" [value]="'TBD'">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Suggest a time:</td>
+                                <td>
+                                    <input type="time" id="shootTime" placeholder="TBD" [value]="'TBD'">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Suggest a location:</td>
+                                <td>
+                                    <input type="text" id="location" placeholder="TBD" [value]="'TBD'" maxlength="100">
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div>Brief message to <span *ngIf="bookAPhotogFlg">photographer</span> <span
+                            *ngIf="!bookAPhotogFlg">model</span>:</div>
+                    <textarea name="message" id="message" style="width: 100%;"></textarea>
+
+                    <div>If this person accepts your offer, you will have access to each other's email
+                        addresses to make final arraingments:</div>
+                    <div *ngIf="errorMessage" class="alert alert-danger">{{errorMessage}}</div>
+                    <button (mousedown)="showModelBookingFormFlg = false" type="button"
+                        class="btn btn-secondary roundButton"> Cancel</button>
+                    <button (mousedown)="sendThisRequest()" type="button" class="btn btn-success roundButton"> Send
+                        Request!</button>
+                </div>
+                <div *ngIf="!showModelBookingFormFlg">
+                    <div class="grayBorder" style="text-align: left;">
+                        <b>Bio:</b>
+                        <p *ngFor="let text of user.bio">{{text}}</p>
+                    </div>
+                    <div class="grayBorder" style="text-align: left;">
+                        <b>Availability:</b>
+                        <p *ngFor="let text of user.availability">{{text}}</p>
+                    </div>
+                    <div style="background-color: #007; color: white; text-align: center; font-size: 12px;">
+                        {{user.city}}</div>
+                </div>
+
+                <app-user-portfolio *ngIf="!showModelBookingFormFlg" [user]="user"></app-user-portfolio>
+
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>

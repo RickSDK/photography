@@ -1,0 +1,278 @@
+<app-header [cityId]="cityId"></app-header>
+<app-menu [menuNum]=4 [userId]="userId" [cityId]="cityId"></app-menu>
+
+<div style="text-align: center;">
+
+    <div class="card">
+        <div *ngIf="successFlg" class="alert alert-success">Profile has been updated!</div>
+        <table width="100%">
+            <tr>
+                <td align="left" width="200">
+                    <img (mousedown)="displayMode=1" id="profileImg" [src]="user.src" [title]="user.name"
+                        class="profilePic">
+                </td>
+                <td>
+                    <div><b>{{user.name}}</b></div>
+
+                    <div *ngIf="user.rate">
+                        <div>Rate: ${{user.rate}}/Hour</div>
+                        <div class="grayBorder" style="text-align: left;">
+                            <b>Bio:</b>
+                            <p *ngFor="let text of user.bio">{{text}}</p>
+                        </div>
+                        <div class="grayBorder" style="text-align: left;">
+                            <b>Availability:</b>
+                            <p *ngFor="let text of user.availability">{{text}}</p>
+                        </div>
+
+                        <div style="background-color: #007; color: white; text-align: center; font-size: 12px;">
+                            {{user.city}}</div>
+                    </div>
+                    <div *ngIf="!user.rate" style="background-color: #ffffc0; padding: 10px;">
+                        You need to set up your profile. Click "Edit Profile"
+                    </div>
+                    <div>Last Active: {{user.lastActive}}</div>
+                </td>
+            </tr>
+        </table>
+        <app-spinner *ngIf="loadingFlg"></app-spinner>
+        <div *ngIf="!loadingFlg" style="background-color: #007; padding: 5px;">
+            <button (mousedown)="displayMode = 1" class="btn btn-secondary roundButton mr-2"><i
+                    class="fa fa-picture-o"></i>
+                Edit Picture</button>
+            <button (mousedown)="displayMode = 2" class="btn btn-secondary roundButton mr-2"><i
+                    class="fa fa-pencil"></i>
+                Edit Profile</button>
+            <button (mousedown)="displayMode = 0" class="btn btn-secondary roundButton mr-2"><i
+                    class="fa fa-picture-o"></i>
+                Edit Portfolio</button>
+            <button *ngIf="0" [routerLink]="['/offers']" [queryParams]="{id: cityId}"
+                class="btn btn-success roundButton">
+                Your Offers</button>
+            <button (mousedown)="logoutPressed()" class="btn btn-secondary roundButton mr-2"><i
+                    class="fa fa-sign-out"></i>
+                Logout</button>
+        </div>
+        <div *ngIf="displayMode == 0" class="grayBorder">
+            <div><b>Add photos to your Portfolio</b>
+                <button (mousedown)="addPhotoPressed()" class="btn btn-secondary roundButton mr-2"><i
+                        class="fa fa-plus"></i>
+                </button>
+            </div>
+            <div *ngIf="user.portfolioImages.length == 0">
+                <p>Upload some of your pictures here!</p>
+            </div>
+            <div *ngIf="addPortfolioFlg">
+                <img id="myImg" src="{{imgSrc}}" style="max-width: 300px; max-height: 300px;">
+                <input type="file" accept="image/*" id="file" (change)="onSelectFile($event)">
+                <button [disabled]="!fileSelectedFlg" (click)="uploadPortImagePressed()"
+                    class="btn btn-primary roundButton mr-2"><i class="fa fa-arrow-up"></i>
+                    Upload</button>
+            </div>
+        </div>
+
+
+        <app-user-portfolio *ngIf="displayMode == 0" [user]="user"></app-user-portfolio>
+
+        <button *ngIf="adminFlg && user.portfolioImages.length > 0" [disabled]="deleteButtonDisabledFlg" (click)="deletePhotoPressed()"
+        class="btn btn-danger roundButton mr-2"><i class="fa fa-trash"></i>
+        Delete this Photo</button>
+
+        <div *ngIf="displayMode == 1">
+            <div>Select a new face image to represent your profile</div>
+            <img id="myImg" src="{{imgSrc}}" style="max-width: 300px; max-height: 300px;">
+            <input type="file" accept="image/*" id="file" (change)="onSelectFile($event)">
+            <button [disabled]="!fileSelectedFlg" (click)="uploadImagePressed()"
+                class="btn btn-primary roundButton mr-2"><i class="fa fa-arrow-up"></i>
+                Upload</button>
+        </div>
+        <div *ngIf="displayMode == 2">
+            <table align="center">
+                <tr>
+                    <td align="right">
+                        <span style="color: red;">*</span>Email:
+                    </td>
+                    <td>
+                        <input type="text" id="emailField" placeholder="Email" [value]="user.email">
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right">
+                        <span style="color: red;">*</span>First Name:
+                    </td>
+                    <td>
+                        <input type="text" id="firstName" placeholder="First Name" [value]="user.firstName">
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right">
+                        <span style="color: red;">*</span>Last Name:
+                    </td>
+                    <td>
+                        <input type="text" id="lastName" placeholder="Last Name" [value]="user.lastName">
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right">
+                        <span style="color: red;">*</span>City:
+                    </td>
+                    <td>
+                        <input type="text" id="city" placeholder="City" [value]="user.city">
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right">
+                        <span style="color: red;">*</span>Phone:
+                    </td>
+                    <td>
+                        <input (input)="validateTelephone($event)" type="text" id="phone" placeholder="(___) ___-____"
+                            [value]="phoneValue">
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right">
+                        <span style="color: red;">*</span>Base:
+                    </td>
+                    <td>
+                        <select id="componentSelect" class="form-control dropdown" (change)="selectCity($event)"
+                            style="width: 200px; text-align: center; display: inline-block;">
+                            <option *ngFor="let city of cities" [selected]="city.city==selectedCity">{{city.city}}
+                            </option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+            <table width="300" align="center">
+                <tr>
+                    <td>
+                        <app-checkbox-toggle (mousedown)="toggleSex(true)" [flag]="maleFlg" [name]="'Male'"></app-checkbox-toggle>
+                    </td>
+                    <td>
+                        <app-checkbox-toggle (mousedown)="toggleSex(false)" [flag]="femaleFlg" [name]="'Female'"></app-checkbox-toggle>                      
+                    </td>
+                </tr>
+            </table>
+            <div class="grayBorder">
+                <div>Account Type</div>
+                <div style="color: gray; font-size: 12px;">Check Model and/or Photographer if you want your profile
+                    posted for others to make offers to you.</div>
+                <table width="300" align="center">
+                    <tr>
+                        <td>
+                            <app-checkbox-toggle [flag]="true" [name]="'Customer'"></app-checkbox-toggle>
+                        </td>
+                        <td>
+                            <app-checkbox-toggle (mousedown)="modelFlg=!modelFlg" [flag]="modelFlg" [name]="'Model'">
+                            </app-checkbox-toggle>
+                        </td>
+                        <td>
+                            <app-checkbox-toggle (mousedown)="photogFlg=!photogFlg" [flag]="photogFlg"
+                                [name]="'Photographer'"></app-checkbox-toggle>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="grayBorder">
+                <div><b>Bio:</b> A brief description of your experience</div>
+                <textarea name="bio" id="bio" rows="4" cols="50">{{user.bio}}</textarea>
+            </div>
+            <div class="grayBorder">
+                <div><b>Availability:</b> For those who want to book a photo shoot, what days and times are best for
+                    you:</div>
+                <textarea name="availability" id="availability" rows="4"
+                    cols="50">{{user.availabilityString}}</textarea>
+            </div>
+            <div class="grayBorder">
+                <div style="color: gray; font-size: 12px;"><b>Hourly Rate:</b> What hourly rate do you charge?
+                </div>
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <button (mousedown)="setHourlyRate(0)" type="button" class="btn btn-default"
+                        [ngClass]="ngClassButtonGroup(0, hourlyIdx)">$20</button>
+                    <button (mousedown)="setHourlyRate(1)" type="button" class="btn btn-default"
+                        [ngClass]="ngClassButtonGroup(1, hourlyIdx)">$40</button>
+                    <button (mousedown)="setHourlyRate(2)" type="button" class="btn btn-default"
+                        [ngClass]="ngClassButtonGroup(2, hourlyIdx)">$80</button>
+                    <button (mousedown)="setHourlyRate(3)" type="button" class="btn btn-default"
+                        [ngClass]="ngClassButtonGroup(3, hourlyIdx)">$120</button>
+                    <button (mousedown)="setHourlyRate(4)" type="button" class="btn btn-default"
+                        [ngClass]="ngClassButtonGroup(4, hourlyIdx)">$160</button>
+                    <button (mousedown)="setHourlyRate(5)" type="button" class="btn btn-default"
+                        [ngClass]="ngClassButtonGroup(5, hourlyIdx)">$200</button>
+                    <button (mousedown)="setHourlyRate(6)" type="button" class="btn btn-default"
+                        [ngClass]="ngClassButtonGroup(6, hourlyIdx)">$300</button>
+                </div>
+                <div class="grayBorder">
+                    <app-checkbox-toggle (mousedown)="twoHourFlg=!twoHourFlg" [flag]="twoHourFlg"
+                    [name]="'Two-Hour minimum'"></app-checkbox-toggle>    
+                </div>
+                
+                <div>Hourly Rate: ${{hourlyRate}}/hour <span *ngIf="twoHourFlg">(2-hour minimum)</span></div>
+            </div>
+            <div class="grayBorder">
+                <div style="color: gray; font-size: 12px;">What types of photo-shoots do you offer:</div>
+
+                <table width="200" align="center">
+                    <tr>
+                        <td valign="middle">
+                            <app-checkbox-toggle [flag]="true" [name]="'Portrait'" [icon]="'portrait.png'">
+                            </app-checkbox-toggle>
+                        </td>
+                        <td valign="middle">
+                            <app-checkbox-toggle (mousedown)="fashionFlg=!fashionFlg" [flag]="fashionFlg"
+                                [name]="'Fashion'" [icon]="'fashion.png'"></app-checkbox-toggle>
+                        </td>
+                        <td valign="middle">
+                            <app-checkbox-toggle (mousedown)="fitnessFlg=!fitnessFlg" [flag]="fitnessFlg"
+                                [name]="'Fitness'" [icon]="'fitness.png'"></app-checkbox-toggle>
+                        </td>
+                        <td valign="middle">
+                            <app-checkbox-toggle (mousedown)="boudoirFlg=!boudoirFlg" [flag]="boudoirFlg"
+                                [name]="'Bourdoir'" [icon]="'boudoir.png'"></app-checkbox-toggle>
+                        </td>
+                        <td valign="middle">
+                            <app-checkbox-toggle (mousedown)="paintFlg=!paintFlg" [flag]="paintFlg" [name]="'Paint'"
+                                [icon]="'paint.png'" title="Body Paint"></app-checkbox-toggle>
+                        </td>
+                        <td valign="middle">
+                            <app-checkbox-toggle (mousedown)="nudeFlg=!nudeFlg" [flag]="nudeFlg" [name]="'Nude'"
+                                [icon]="'nudeF.png'"></app-checkbox-toggle>
+                        </td>
+                        <td valign="middle">
+                            <app-checkbox-toggle (mousedown)="eroticFlg=!eroticFlg" [flag]="eroticFlg" [name]="'Erotic'"
+                                [icon]="'mask.png'"></app-checkbox-toggle>
+                        </td>
+                    </tr>
+                </table>
+                <div *ngIf="modelFlg && (boudoirFlg || nudeFlg || paintFlg || eroticFlg)">
+                    <div style="color: gray; font-size: 12px;"><b>Bourdoir Rate:</b> What is your additional hourly rate
+                        for
+                        boudoir & nudes (Optional)</div>
+                    <div class="btn-group" role="group" aria-label="Basic example">
+                        <button (mousedown)="setNudeRate(0)" type="button" class="btn btn-default"
+                            [ngClass]="ngClassButtonGroup(0, nudeIdx)">$0</button>
+                        <button (mousedown)="setNudeRate(1)" type="button" class="btn btn-default"
+                            [ngClass]="ngClassButtonGroup(1, nudeIdx)">$25</button>
+                        <button (mousedown)="setNudeRate(2)" type="button" class="btn btn-default"
+                            [ngClass]="ngClassButtonGroup(2, nudeIdx)">$50</button>
+                        <button (mousedown)="setNudeRate(3)" type="button" class="btn btn-default"
+                            [ngClass]="ngClassButtonGroup(3, nudeIdx)">$100</button>
+                        <button (mousedown)="setNudeRate(4)" type="button" class="btn btn-default"
+                            [ngClass]="ngClassButtonGroup(4, nudeIdx)">$200</button>
+                    </div>
+                    <div>Extra Charge: ${{nudeRate}}, Total Cost: ${{totalCost}}/hour</div>
+                </div>
+            </div>
+            <div (mousedown)="dismissError()" *ngIf="errorMessage" style="background-color: #ffffc0; color: red;">
+                {{errorMessage}}</div>
+
+            <button (mousedown)="displayMode=0" type="button" class="btn btn-secondary roundButton">Cancel</button>
+            <button (click)="uploadProfilePressed()" class="btn btn-primary roundButton mr-2"><i
+                    class="fa fa-arrow-up"></i>
+                Save Changes</button>
+            <p>---</p>
+        </div>
+
+
+    </div>
+</div>

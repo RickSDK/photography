@@ -1,0 +1,14 @@
+<div style="background-color: #222; color: white; padding: 10px;">
+    <table width="100%">
+        <tr>
+            <td>
+                <div [routerLink]="['']" style="font-size: 28px; font-weight: 800; cursor: pointer;">Photography <span class="liteBlue">Hub</span></div>
+                <div style="font-size: 12px;">Connecting Photographers & Models</div>
+            </td>
+            <td align="right">
+                <span [routerLink]="['']" *ngIf="cityId>0" class="link">{{cities[cityId].city}}</span>
+                <i class="fa fa-camera" *ngIf="cityId==0" style="font-size: 32px;"></i>
+            </td>
+        </tr>
+    </table>
+</div>

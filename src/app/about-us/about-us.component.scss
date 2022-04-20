@@ -1,0 +1,17 @@
+.card {
+    display: inline-block;
+    cursor: pointer;
+     border: 1px solid #222;
+    background-color: #ddd; 
+    color: black;
+     margin: 6px;
+    border-radius: 5px; 
+     padding: 20px;
+     box-shadow: 2px 2px 3px #444;
+    text-align: left;
+  }
+  .card:hover {
+     border: 2px solid black;
+    background-color: #eee; 
+     box-shadow: 2px 2px 5px black;
+  }

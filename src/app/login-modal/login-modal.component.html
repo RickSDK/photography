@@ -1,0 +1,88 @@
+<div *ngIf="showFlg" class="modal-outer" id="photoModal" tabindex="-1" role="dialog" (mousedown)="outerClicked()">
+    <div class="modal-dialog modal-lg" role="document" (mousedown)="innerClicked($event)" style="max-width: 320px;">
+        <div class="modal-content">
+            <div (mousedown)="showFlg=false" class="modal-header">
+                <b><i class="fa fa-user"></i> User Login</b>
+                <i class="fa fa-times" style="float: right; cursor: pointer;"></i>
+
+            </div>
+            <div class="modal-body" style="text-align: center;">
+
+                <app-spinner *ngIf="loadingFlg"></app-spinner>
+                <div (mousedown)="show(cityId)" *ngIf="errorMessage" style="background-color: #ffffc0; color: red;">
+                    {{errorMessage}}</div>
+
+                <div *ngIf="successFlg" style="font-size: 32px; color: green;">Success!</div>
+                <div *ngIf="showLoginFlg">
+                    <input type="text" id="emailField" placeholder="Email">
+                    <input type="password" id="passwordField" placeholder="Password">
+                    <div>
+                        <button (click)="loginPressed()" class="btn btn-secondary roundButton"
+                            style="font-size: 18px; height: 60px; margin: 10px;"><i class="fa fa-sign-in"></i>
+                            Login</button>
+                    </div>
+                    <app-button (click)="toggleAccountCreate()" name="Create Account" icon="plus" [butStyle]="3">
+                    </app-button>
+                </div>
+
+                <div *ngIf="showCreateAccountFlg">
+                    <input type="text" id="emailField3" placeholder="Email">
+                    <input type="text" id="firstName" placeholder="First Name">
+                    <input type="text" id="lastName" placeholder="Last Name">
+                    <input type="password" id="passwordField2" placeholder="Password">
+                    <input type="password" id="passwordField3" placeholder="re-type Password">
+
+                    <div class="grayBorder">
+                        <table width="100%" align="center">
+                            <tr>
+                                <td>
+                                    <app-checkbox-toggle [flag]="true" [name]="'Customer'"></app-checkbox-toggle>
+                                </td>
+                                <td>
+                                    <app-checkbox-toggle (mousedown)="modelFlg=!modelFlg" [flag]="modelFlg"
+                                        [name]="'Model'">
+                                    </app-checkbox-toggle>
+                                </td>
+                                <td>
+                                    <app-checkbox-toggle (mousedown)="photogFlg=!photogFlg" [flag]="photogFlg"
+                                        [name]="'Photographer'"></app-checkbox-toggle>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <hr>
+                    <div class="grayBorder">
+                        <table width="100%" align="center">
+                            <tr>
+                                <td>
+                                    <app-checkbox-toggle (mousedown)="toggleSex(true)" [flag]="maleFlg"
+                                        [name]="'Male'">
+                                    </app-checkbox-toggle>
+                                </td>
+                                <td>
+                                    <app-checkbox-toggle (mousedown)="toggleSex(false)" [flag]="femaleFlg"
+                                        [name]="'Female'"></app-checkbox-toggle>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div>
+                        <button (click)="toggleAccountCreate()" class="btn btn-secondary roundButton"><i
+                                class="fa fa-arrow-left"></i>
+                            Back</button>
+
+                        <button [disabled]="(!maleFlg && !femaleFlg)" (click)="createAccountPressed()"
+                            class="btn btn-primary roundButton" style="font-size: 18px; height: 60px; margin: 10px;"><i
+                                class="fa fa-sign-in"></i>
+                            Create!</button>
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>

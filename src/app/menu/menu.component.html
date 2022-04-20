@@ -1,0 +1,9 @@
+<div style="background-color: #ccc; color: #666; padding: 4px; text-align: center;">
+    <span *ngIf="!cityId || cityId==0" [routerLink]="['']" class="link" [ngStyle]="ngStyleMenu(0)"><i class="fa fa-home"></i> HOME</span>
+    <span *ngIf="cityId>0" [routerLink]="['/models']" [queryParams]="{id: cityId}" class="link" [ngStyle]="ngStyleMenu(1)"><i class="fa fa-user"></i> MODELS</span>
+    <span *ngIf="cityId>0" [routerLink]="['/photographers']" [queryParams]="{id: cityId}" class="link" [ngStyle]="ngStyleMenu(2)"><i class="fa fa-camera"></i> PHOTOGRAPHERS</span>
+     <span *ngIf="!userId || userId==0" (mousedown)="signupPressed()" class="link" [ngStyle]="ngStyleMenu(4)"><i class="fa fa-user"></i> SIGN UP</span>
+    <span *ngIf="userId>0" [routerLink]="['/profile']" [queryParams]="{id: cityId}" class="link" [ngStyle]="ngStyleMenu(4)"><i class="fa fa-user"></i> PROFILE</span>
+    <span *ngIf="userId>0" [routerLink]="['/offers']" [queryParams]="{id: cityId}" class="link" [ngStyle]="ngStyleMenu(5)"><i class="fa fa-list-alt"></i> OFFERS</span>
+</div>
+
